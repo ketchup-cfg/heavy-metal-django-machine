@@ -1,10 +1,10 @@
 from django.urls import path
 
-from . import views
+from posts import views
 
 app_name = "posts"
 urlpatterns = [
-    path("", views.IndexView.as_view(), name="index"),
-    path("<int:pk>/", views.DetailView.as_view(), name="detail"),
-    path("<int:post_id>/update/", views.update, name="update"),
+    path("", views.PostIndexView.as_view(), name="index"),
+    path("<int:pk>/", views.PostDetailView.as_view(), name="detail"),
+    path("<int:pk>/update/", views.PostUpdateView.as_view(), name="update"),
 ]

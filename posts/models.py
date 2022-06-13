@@ -21,4 +21,4 @@ class Post(models.Model):
         return now - datetime.timedelta(days=1) <= self.publish_date <= now
 
     def get_absolute_url(self) -> str:
-        return reverse('posts:detail', kwargs={'pk': self.pk})
+        return reverse("posts:detail", kwargs={"pk": self.pk})

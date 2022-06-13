@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from .models import Post
+from posts.models import Post
 
 
 def create_post(title: str, body_content, days: int) -> Post:
@@ -40,12 +40,21 @@ class PostModelTests(TestCase):
 
     def test_was_published_recently_with_recent_post(self):
         """
-        was_published_recently() returns True for post whose publish_date
+        was_published_recently() returns True for posts whose publish_date
         is within the last day.
         """
         time = timezone.now() - datetime.timedelta(hours=23, minutes=59, seconds=59)
         recent_post = Post(publish_date=time)
         self.assertIs(recent_post.was_published_recently(), True)
+
+    def test_get_absolute_url(self):
+        """
+        get_absolute_url() returns the expected URL for the post.
+        """
+        post = create_post(title="New post.", body_content="Some content!", days=30)
+        expected = reverse("posts:detail", args=(post.id,))
+        actual = post.get_absolute_url()
+        self.assertEqual(expected, actual)
 
 
 class PostIndexViewTests(TestCase):
@@ -129,3 +138,26 @@ class PostDetailViewTests(TestCase):
         self.assertContains(response, past_post.title)
 
 
+class PostUpdateViewTests(TestCase):
+    def test_update_valid_post(self):
+        """
+        Ensure that the update view successfully updates the data shown in the
+        detail view.
+        """
+        post = create_post(title="New post.", body_content="News!", days=-30)
+        post.title = "Valid post."
+        post.body_content = "Some valid content."
+
+        url = reverse("posts:update", args=(post.id,))
+        response = self.client.post(
+            url,
+            {
+                "title": post.title,
+                "body_content": post.body_content,
+                "publish_date": post.publish_date,
+            },
+            follow=True
+        )
+
+        self.assertContains(response, post.title)
+        self.assertContains(response, post.body_content)
