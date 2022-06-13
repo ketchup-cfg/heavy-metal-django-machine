@@ -1,14 +1,11 @@
 from django.db.models.query import QuerySet
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
 from django.utils import timezone
 from django.views import generic
 
-from .models import Post
+from posts.models import Post
 
 
-class IndexView(generic.ListView):
+class PostIndexView(generic.ListView):
     template_name = "posts/index.html"
     context_object_name = "latest_posts_list"
 
@@ -22,7 +19,7 @@ class IndexView(generic.ListView):
         )[:5]
 
 
-class DetailView(generic.DetailView):
+class PostDetailView(generic.DetailView):
     model = Post
     template_name = "posts/detail.html"
 
@@ -33,8 +30,7 @@ class DetailView(generic.DetailView):
         return Post.objects.filter(publish_date__lte=timezone.now())
 
 
-def update(request: HttpRequest, post_id: int) -> HttpResponse:
-    post = get_object_or_404(Post, pk=post_id)
-    post.save()
-
-    return HttpResponseRedirect(reverse("posts:index", args=(post.id,)))
+class PostUpdateView(generic.UpdateView):
+    model = Post
+    fields = ["title", "body_content", "publish_date"]
+    template_name = "posts/detail.html"
