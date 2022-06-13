@@ -33,6 +33,9 @@ class DetailView(generic.DetailView):
         return Post.objects.filter(publish_date__lte=timezone.now())
 
 
+class PostUpdateView(generic.UpdateView):
+    model = Post
+    template_name = "posts/detail.html"
 def update(request: HttpRequest, post_id: int) -> HttpResponse:
     post = get_object_or_404(Post, pk=post_id)
     post.save()

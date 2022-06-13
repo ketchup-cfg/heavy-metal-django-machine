@@ -7,6 +7,18 @@ from django.utils import timezone
 from .models import Post
 
 
+def create_post(title: str, body_content, days: int) -> Post:
+    """
+    Create a post with the given `title` and `body_content` and published the
+    given number of `days` offset to now (negative for posts published
+    in the past, positive for posts that have yet to be published).
+    """
+    time = timezone.now() + datetime.timedelta(days=days)
+    return Post.objects.create(
+        title=title, body_content=body_content, publish_date=time
+    )
+
+
 class PostModelTests(TestCase):
     def test_was_published_recently_with_future_post(self):
         """
@@ -34,18 +46,6 @@ class PostModelTests(TestCase):
         time = timezone.now() - datetime.timedelta(hours=23, minutes=59, seconds=59)
         recent_post = Post(publish_date=time)
         self.assertIs(recent_post.was_published_recently(), True)
-
-
-def create_post(title: str, body_content, days: int) -> Post:
-    """
-    Create a post with the given `title` and `body_content` and published the
-    given number of `days` offset to now (negative for posts published
-    in the past, positive for posts that have yet to be published).
-    """
-    time = timezone.now() + datetime.timedelta(days=days)
-    return Post.objects.create(
-        title=title, body_content=body_content, publish_date=time
-    )
 
 
 class PostIndexViewTests(TestCase):
@@ -127,3 +127,5 @@ class PostDetailViewTests(TestCase):
         url = reverse("posts:detail", args=(past_post.id,))
         response = self.client.get(url)
         self.assertContains(response, past_post.title)
+
+
