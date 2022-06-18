@@ -67,5 +67,5 @@ If you would like to view a more detailed coverage report, run the following:
 $ coverage html
 ```
 
-the open htmlcov/index.html in a web browser.
+then open htmlcov/index.html in a web browser.
 
