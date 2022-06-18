@@ -20,6 +20,28 @@ def create_post(title: str, body_content, days: int) -> Post:
 
 
 class PostModelTests(TestCase):
+    def test_str_returns_post_title(self):
+        """
+        __str__ returns the title of the post.
+        """
+        post = create_post(title="New post.", body_content="Some content!", days=30)
+        expected = post.title
+
+        actual = str(post)
+
+        self.assertEqual(expected, actual)
+
+    def test_repr_returns_formatted_post(self):
+        """
+        __repr__ returns the expected representation of the post.
+        """
+        post = create_post(title="New post.", body_content="Some content!", days=30)
+        expected = f"Post(title={post.title!r}, body_content={post.body_content!r}, publish_date={post.publish_date!r}"
+
+        actual = repr(post)
+
+        self.assertEqual(expected, actual)
+
     def test_was_published_recently_with_future_post(self):
         """
         was_published_recently() returns False for posts whose publish_date
@@ -141,8 +163,8 @@ class PostDetailViewTests(TestCase):
 class PostUpdateViewTests(TestCase):
     def test_update_valid_post(self):
         """
-        Ensure that the update view successfully updates the data shown in the
-        detail view.
+        Ensure that the update view successfully updates the data for a post when valid
+        data is provided, and that it shows the updated data on the detail view page.
         """
         post = create_post(title="New post.", body_content="News!", days=-30)
         post.title = "Valid post."

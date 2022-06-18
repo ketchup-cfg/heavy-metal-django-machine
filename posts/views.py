@@ -1,11 +1,12 @@
 from django.db.models.query import QuerySet
 from django.utils import timezone
-from django.views import generic
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 
 from posts.models import Post
 
 
-class PostIndexView(generic.ListView):
+class PostIndexView(ListView):
     template_name = "posts/index.html"
     context_object_name = "latest_posts_list"
 
@@ -19,7 +20,7 @@ class PostIndexView(generic.ListView):
         )[:5]
 
 
-class PostDetailView(generic.DetailView):
+class PostDetailView(DetailView):
     model = Post
     template_name = "posts/detail.html"
 
@@ -30,7 +31,13 @@ class PostDetailView(generic.DetailView):
         return Post.objects.filter(publish_date__lte=timezone.now())
 
 
-class PostUpdateView(generic.UpdateView):
+class PostUpdateView(UpdateView):
     model = Post
     fields = ["title", "body_content", "publish_date"]
     template_name = "posts/detail.html"
+
+
+class PostDeleteView(DeleteView):
+    model = Post
+    template_name = "posts/detail.html"
+    success_url = reverse_lazy("posts:index")
