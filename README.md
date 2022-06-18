@@ -46,3 +46,26 @@ In order to run the application, enter the following command into your terminal:
 ```bash
 $ python manage.py runserver
 ```
+
+## Check Test Coverage
+
+To check total test coverage for the application, run the following to gather test data:
+
+```bash
+$ coverage run --source='.' manage.py test
+```
+
+then run the following to generate the coverage report:
+
+```bash
+$ coverage report
+```
+
+If you would like to view a more detailed coverage report, run the following:
+
+```bash
+$ coverage html
+```
+
+the open htmlcov/index.html in a web browser.
+
