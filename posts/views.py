@@ -1,7 +1,7 @@
 from django.db.models.query import QuerySet
-from django.utils import timezone
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, UpdateView, DeleteView
+from django.utils import timezone
+from django.views.generic import DeleteView, DetailView, ListView, UpdateView
 
 from posts.models import Post
 
