@@ -1,7 +1,13 @@
 from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.views.generic import DeleteView, DetailView, ListView, UpdateView
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
+)
 
 from posts.models import Post
 
@@ -29,6 +35,12 @@ class PostDetailView(DetailView):
         Excludes any posts that aren't published yet.
         """
         return Post.objects.filter(publish_date__lte=timezone.now())
+
+
+class PostCreateView(CreateView):
+    model = Post
+    fields = ["title", "body_content", "publish_date"]
+    template_name = "posts/detail.html"
 
 
 class PostUpdateView(UpdateView):

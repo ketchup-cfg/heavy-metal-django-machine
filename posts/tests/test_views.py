@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from posts.models import Post
 from posts.tests import create_post
@@ -84,6 +85,30 @@ class PostDetailViewTests(TestCase):
         url = reverse("posts:detail", args=(past_post.id,))
         response = self.client.get(url)
         self.assertContains(response, past_post.title)
+
+
+class PostCreateViewTests(TestCase):
+    def test_create_valid_post(self):
+        """
+        Ensure that the create view successfully create a post when valid data is
+        provided, and that it shows the new data on the detail view page.
+        """
+        post_title = "Post title"
+        post_body = "Some content"
+
+        url = reverse("posts:create")
+        response = self.client.post(
+            url,
+            {
+                "title": post_title,
+                "body_content": post_body,
+                "publish_date": timezone.now(),
+            },
+            follow=True,
+        )
+
+        self.assertContains(response, post_title)
+        self.assertContains(response, post_body)
 
 
 class PostUpdateViewTests(TestCase):
