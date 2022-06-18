@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
+from posts.models import Post
 from posts.tests import create_post
 
 
@@ -108,3 +109,18 @@ class PostUpdateViewTests(TestCase):
 
         self.assertContains(response, post.title)
         self.assertContains(response, post.body_content)
+
+
+class PostDeleteViewTests(TestCase):
+    def test_delete_existing_post(self):
+        """
+        Ensure that the delete view successfully deletes the specified post when a
+        valid post ID is provided.
+        """
+        post = create_post(title="New post.", body_content="News!", days=-30)
+
+        delete_url = reverse("posts:delete", args=(post.id,))
+        _ = self.client.delete(delete_url)
+
+        with self.assertRaises(Post.DoesNotExist):
+            _ = Post.objects.get(pk=post.id)
