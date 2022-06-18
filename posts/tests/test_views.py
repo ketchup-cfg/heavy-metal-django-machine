@@ -86,6 +86,22 @@ class PostDetailViewTests(TestCase):
         response = self.client.get(url)
         self.assertContains(response, past_post.title)
 
+    def test_post_does_not_exist(self):
+        """
+        Ensure that the detail view returns a 404 error when an ID for a nonexistant
+        post is provided.
+        """
+        expected = 404
+        post = create_post(title="New post.", body_content="News!", days=-30)
+        post_id = post.id
+
+        post.delete()
+        url = reverse("posts:detail", args=(post_id,))
+        response = self.client.get(url)
+        actual = response.status_code
+
+        self.assertEqual(expected, actual)
+
 
 class PostCreateViewTests(TestCase):
     def test_create_valid_post(self):
@@ -135,6 +151,32 @@ class PostUpdateViewTests(TestCase):
         self.assertContains(response, post.title)
         self.assertContains(response, post.body_content)
 
+    def test_update_nonexistant_post(self):
+        """
+        Ensure that the update view returns a 404 response status code when called for
+        post that does not exist.
+        """
+        expected = 404
+        post = create_post(title="New post.", body_content="News!", days=-30)
+        post.title = "Valid post."
+        post.body_content = "Some valid content."
+        post_id = post.id
+
+        post.delete()
+        url = reverse("posts:update", args=(post_id,))
+        response = self.client.post(
+            url,
+            {
+                "title": post.title,
+                "body_content": post.body_content,
+                "publish_date": post.publish_date,
+            },
+            follow=True,
+        )
+        actual = response.status_code
+
+        self.assertEqual(expected, actual)
+
 
 class PostDeleteViewTests(TestCase):
     def test_delete_existing_post(self):
@@ -149,3 +191,19 @@ class PostDeleteViewTests(TestCase):
 
         with self.assertRaises(Post.DoesNotExist):
             _ = Post.objects.get(pk=post.id)
+
+    def test_delete_nonexistant_post(self):
+        """
+        Ensure that the delete view returns a 404 when attempting to delete a post that
+        does not exist.
+        """
+        expected = 404
+        post = create_post(title="New post.", body_content="News!", days=-30)
+        post_id = post.id
+
+        post.delete()
+        delete_url = reverse("posts:delete", args=(post_id,))
+        response = self.client.delete(delete_url)
+        actual = response.status_code
+
+        self.assertEqual(expected, actual)
