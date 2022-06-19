@@ -34,7 +34,11 @@
         <div class="container">
           <div class="columns">
             <div class="column is-three-fifths is-offset-one-fifth">
-              <form action="{% url 'posts:create' %}" method="post">
+              {% if post.id is not None %}
+                <form action="{% url 'posts:update' post.id %}" method="post">
+              {% else %}
+                <form action="{% url 'posts:create' %}" method="post">
+              {% endif %}
                 {% csrf_token %}
                 <div class="field">
                   <label class="label" for="title">Title</label>
@@ -51,7 +55,7 @@
                 <div class="field">
                   <label class="label" for="publish_date">Publish Date</label>
                   <div class="control">
-                    <input class="input" type="datetime-local" name="publish_date" id="publish_date" value="{{ post.publish_date }}" required>
+                    <input class="input" type="datetime-local" name="publish_date" id="publish_date" value="{{ post.publish_date|date:'Y-m-d' }}T{{ post.publish_date|time:'H:i:s' }}" required>
                   </div>
                 </div>
                 <div class="field">

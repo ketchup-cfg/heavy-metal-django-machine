@@ -49,6 +49,12 @@
                   </div>
                 </div>
                 <div class="field">
+                  <label class="label" for="publish_date">Publish Date</label>
+                  <div class="control">
+                    <input class="input" type="datetime-local" name="publish_date" id="publish_date" value="{{ post.publish_date|date:'Y-m-d' }}T{{ post.publish_date|time:'H:i:s' }}" required>
+                  </div>
+                </div>
+                <div class="field">
                   <p class="control">
                     <input class="button is-success" type="submit" value="Save">
                   </p>

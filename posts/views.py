@@ -40,15 +40,10 @@ class PostCreateView(CreateView):
     model = Post
     fields = ["title", "body_content", "publish_date"]
 
-    def form_invalid(self, form):
-        print("We getting an invalid form?")
-        return super().form_invalid(form)
-
 
 class PostUpdateView(UpdateView):
     model = Post
     fields = ["title", "body_content", "publish_date"]
-    template_name = "posts/detail.html"
 
 
 class PostDeleteView(DeleteView):
