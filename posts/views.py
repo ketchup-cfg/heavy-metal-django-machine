@@ -28,7 +28,6 @@ class PostIndexView(ListView):
 
 class PostDetailView(DetailView):
     model = Post
-    template_name = "posts/detail.html"
 
     def get_queryset(self) -> QuerySet[Post]:
         """
@@ -40,7 +39,10 @@ class PostDetailView(DetailView):
 class PostCreateView(CreateView):
     model = Post
     fields = ["title", "body_content", "publish_date"]
-    template_name = "posts/detail.html"
+
+    def form_invalid(self, form):
+        print("We getting an invalid form?")
+        return super().form_invalid(form)
 
 
 class PostUpdateView(UpdateView):
@@ -51,5 +53,4 @@ class PostUpdateView(UpdateView):
 
 class PostDeleteView(DeleteView):
     model = Post
-    template_name = "posts/detail.html"
     success_url = reverse_lazy("posts:index")
