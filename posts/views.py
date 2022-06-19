@@ -13,7 +13,6 @@ from posts.models import Post
 
 
 class PostIndexView(ListView):
-    template_name = "posts/index.html"
     context_object_name = "latest_posts_list"
 
     def get_queryset(self) -> QuerySet[Post]:
